@@ -1,5 +1,10 @@
 package commandes;
 
+import models.FileManager;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 
 public class CommandeCD extends Commande {
@@ -9,7 +14,8 @@ public class CommandeCD extends Commande {
 	}
 
 	public void execute() {
-		ps.println("La commande cd n'est pas encoré implémentée");
+		FileManager.move(this.commandeArgs[0]);
+		ps.println(FileManager.BASE_PATH);
 	}
 
 }

@@ -12,7 +12,8 @@ public class ClientLauncher {
 
 			while(true) {
 				client.authenticate();
-				System.out.println("hello");
+				client.sendCommande("pwd");
+				client.sendCommande("cd ..");
 				client.getResponse();
 			}
 
