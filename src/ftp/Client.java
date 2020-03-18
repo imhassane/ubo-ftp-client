@@ -10,37 +10,57 @@ import java.util.Scanner;
 
 public class Client extends Socket {
 
-	Scanner scanner = new Scanner(System.in);
-
 	PrintStream printer;
 	BufferedReader reader;
 
-	String host = "localhost", username = "", password = "";
+	String host = "localhost";
+	String username = "", password = "";
+	String path = null;
 	int port = 2121;
+
+	boolean authenticated = false;
 	
 	public Client(String host, int port)
-			throws UnknownHostException, IOException
+			throws IOException
 	{
 		super(host, port);
 		this.host = host;
 		this.port = port;
 		this.reader = new BufferedReader(new InputStreamReader(this.getInputStream()));
 		this.printer = new PrintStream(this.getOutputStream());
+		this.path = System.getProperty("user.dir");
 	}
 
-	public void setUser(String username, String password) {
+	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getUsername() {
+		return this.username;
+	}
+
+	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	public void authenticate() {
-		this.printer.println("user " + username);
-		this.printer.println("pass " + password);
+	public void setAuthenticated(boolean authenticated) {
+		this.authenticated = authenticated;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public BufferedReader getReader() {
+		return reader;
 	}
 
 	public void sendCommande(String cmd) throws IOException {
 		this.printer.println(cmd);
-		System.out.println("Commande: " + cmd);
 	}
 
 	public String getResponse() throws IOException {

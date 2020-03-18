@@ -25,16 +25,22 @@ public class ServerClientConnectionHandler implements Runnable {
         printer.println("1 Serveur FTP Personnel.");
         printer.println("0 Authentification");
 
-        while(true) {
+        try {
+            while (!(commande = reader.readLine()).equals("bye")) {
+                System.out.println(">> " + commande);
+                CommandExecutor.executeCommande(printer, commande);
+            }
 
+            printer.println("221 Vous êtes déconnecté");
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        } finally {
             try {
-                while (!(commande = reader.readLine()).equals("bye")) {
-                    System.out.println(">> " + commande);
-                    CommandExecutor.executeCommande(printer, commande);
-                }
+                socket.close();
             } catch(Exception ex) {
                 ex.printStackTrace();
             }
         }
+
     }
 }

@@ -24,15 +24,20 @@ public class CommandExecutor {
 			if(commande.split(" ")[0].equals("stor")) (new CommandeSTOR(ps, commande)).execute();
 							}
 		else {
-			if(commande.split(" ")[0].equals("pass") || commande.split(" ")[0].equals("user")) {
+			if( commande.split(" ")[0].equals("pass") ||
+				commande.split(" ")[0].equals("passe") ||
+				commande.split(" ")[0].equals("user")
+			)
+			{
 				// Le mot de passe pour l'authentification
 				if(commande.split(" ")[0].equals("pass")) (new CommandePASS(ps, commande)).execute();
+
+				// Le mot de passe pour l'authentification
+				if(commande.split(" ")[0].equals("passe")) (new CommandePASSE(ps, commande)).execute();
 	
 				// Le login pour l'authentification
 				if(commande.split(" ")[0].equals("user")) (new CommandeUSER(ps, commande)).execute();
 			}
-			else
-				ps.println("2 Vous n'êtes pas connecté !");
 		}
 	}
 
