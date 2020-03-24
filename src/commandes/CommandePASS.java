@@ -13,7 +13,6 @@ public class CommandePASS extends Commande {
 		if(commandeArgs[0].toLowerCase().equals("abcd")) {
 			CommandExecutor.pwOk = true;
 			ps.println("230 Vous êtes bien connecté sur notre serveur");
-
 		}
 		else {
 			ps.println("530 Le mot de passe est faux");

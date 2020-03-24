@@ -43,8 +43,14 @@ public class Client extends Socket {
 		this.password = password;
 	}
 
+	public String getPassword() { return password; }
+
 	public void setAuthenticated(boolean authenticated) {
 		this.authenticated = authenticated;
+	}
+
+	public boolean isAuthenticated() {
+		return authenticated;
 	}
 
 	public void setPath(String path) {

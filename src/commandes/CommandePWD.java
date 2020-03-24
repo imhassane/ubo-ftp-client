@@ -1,6 +1,5 @@
 package commandes;
 
-import java.io.File;
 import java.io.PrintStream;
 
 public class CommandePWD extends Commande {
@@ -10,9 +9,7 @@ public class CommandePWD extends Commande {
 	}
 
 	public void execute() {
-		File file = new File(".");
-		String s = file.getAbsoluteFile().toString();
-		ps.println("257 " + s);
+		ps.println("257 " + System.getProperty("user.dir"));
 	}
 
 }
