@@ -1,5 +1,5 @@
-import java.io.BufferedReader;
-import java.io.PrintStream;
+import java.io.*;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import commandes.CommandExecutor;
@@ -39,18 +39,68 @@ public class ClientLauncher {
 			} while(!client.getResponse().contains("230"));
 
 			client.setAuthenticated(true);
+			// On récupère l'adresse courante du serveur.
+			client.sendCommande("pwd");
+			Thread.sleep(500);
+			if(client.getReader().ready()) {
+				client.setServerPath(client.getReader().readLine().substring(3));
+			}
 
 			boolean stay = true;
 			while(stay) {
 				System.out.print(">> ");
 				commande = sc.nextLine();
 				if(commande.toLowerCase().contains("cd")) {
-					commande += " " + client.getPath();
+					commande += " " + client.getServerPath();
+				}
+				else if(commande.toLowerCase().contains("ls")) {
+					commande += " " + client.getServerPath();
+				}
+				else if(commande.contains("stor")) {
+					File f = new File(client.getPath() + "/" + commande.split(" ")[1]);
+					if(!f.exists()) {
+						System.out.println("Ce fichier n'existe pas");
+					} else {
+						StringBuilder builder = new StringBuilder();
+						BufferedReader reader = new BufferedReader(new FileReader(f.getAbsoluteFile().toString()));
+						reader.lines().forEach(l -> builder.append(l + "\n"));
+						// On créé une chaine de bytes sous la forme: 45,98,100,3
+						// on met pas d'espace car le CommandeExecutor fait un split(" ").
+						byte[] bytes = builder.toString().getBytes();
+						String bytesValue = "";
+						for(byte b: bytes) {
+							bytesValue += b + ",";
+						}
+						// On envoie une commande composée du nom du fichier puis de la chaine de bytes.
+						commande = "stor " + client.getServerPath() + "\\" + f.getName() + " " + bytesValue;
+						reader.close();
+						System.out.println("Copie de " + f.getAbsolutePath() + " vers " + client.getServerPath());
+					}
 				}
 				client.sendCommande(commande);
 
 				Thread.sleep(200);
-				result = client.getResponse();
+				if(commande.contains("get")) {
+					result = client.getReader().readLine();
+					// On écrit le contenu du fichier dans le repertoire actuel.
+					try(BufferedWriter writer = new BufferedWriter(new FileWriter(client.getPath() + commande.split(" ")[1] + "-copy"))) {
+						String content = result.substring(4);
+						content = content.substring(1, content.length() - 1);
+						String[] splitted = content.split(", ");
+						byte[] bytes = new byte[splitted.length];
+						int i = 0;
+						for(; i < bytes.length; i++) {
+							bytes[i] = (byte) ((int) Integer.valueOf(splitted[i]));
+						}
+						writer.write(new String(bytes));
+						System.out.println("230 transfert reussi");
+					} catch(Exception ex) {
+						System.out.println(ex.getMessage());
+					}
+					result = result.split(" ")[0];
+				} else {
+					result = client.getResponse();
+				}
 				if(result.equals("221"))
 					stay = false;
 			}

@@ -13,10 +13,8 @@ public class Client extends Socket {
 	PrintStream printer;
 	BufferedReader reader;
 
-	String host = "localhost";
 	String username = "", password = "";
-	String path = null;
-	int port = 2121;
+	String path = null, serverPath = ".";
 
 	boolean authenticated = false;
 	
@@ -24,8 +22,6 @@ public class Client extends Socket {
 			throws IOException
 	{
 		super(host, port);
-		this.host = host;
-		this.port = port;
 		this.reader = new BufferedReader(new InputStreamReader(this.getInputStream()));
 		this.printer = new PrintStream(this.getOutputStream());
 		this.path = System.getProperty("user.dir");
@@ -61,12 +57,17 @@ public class Client extends Socket {
 		return path;
 	}
 
+	public void setServerPath(String s) { this.serverPath = s; }
+
+	public String getServerPath() { return serverPath; }
+
 	public BufferedReader getReader() {
 		return reader;
 	}
 
 	public void sendCommande(String cmd) throws IOException {
-		this.printer.println(cmd);
+		String state = this.authenticated ? "true" : "false";
+		this.printer.println(cmd + " " + state);
 	}
 
 	public String getResponse() throws IOException {

@@ -8,8 +8,6 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CommandeLS extends Commande {
@@ -19,18 +17,15 @@ public class CommandeLS extends Commande {
 	}
 
 	public void execute() {
-		try(Stream<Path> walker = Files.walk(Paths.get(FileManager.BASE_PATH))) {
-			List<String> files = walker
-									.filter(Files::isDirectory)
-									.map(x -> x.getFileName().toString())
-									.collect(Collectors.toList());
-			StringBuilder builder = new StringBuilder();
-			builder.append("210 ");
-			files.forEach(f -> builder.append(String.format("%s ", f)));
-			ps.println(builder.toString());
+		StringBuilder builder = new StringBuilder();
+
+		try(Stream<Path> paths = Files.walk(Paths.get(commandeArgs[1]))) {
+			paths.filter(f -> !f.toFile().isHidden() && !f.toAbsolutePath().toString().contains(".")).forEach(f -> builder.append( f.toString() + " "));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		ps.println("210 " + builder.toString());
 	}
 
 }
