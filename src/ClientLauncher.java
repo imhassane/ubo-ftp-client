@@ -14,6 +14,7 @@ public class ClientLauncher {
 			Client client = new Client("localhost", 2121);
 			String commande = "", result = "";
 
+			// On attends quelques millisecondes pour recevoir les premiers messages du serveur.
 			try {
 				Thread.sleep(500);
 				while (client.getReader().ready()) {
@@ -23,7 +24,7 @@ public class ClientLauncher {
 			} catch(InterruptedException ex) {
 				ex.printStackTrace();
 			}
-
+			// On force l'utilisateur à se connecter.
 			do {
 				System.out.print(">> ");
 				commande = sc.nextLine();
@@ -61,6 +62,7 @@ public class ClientLauncher {
 					if(!f.exists()) {
 						System.out.println("Ce fichier n'existe pas");
 					} else {
+						// On lit le contenu du fichier
 						StringBuilder builder = new StringBuilder();
 						BufferedReader reader = new BufferedReader(new FileReader(f.getAbsoluteFile().toString()));
 						reader.lines().forEach(l -> builder.append(l + "\n"));
@@ -87,15 +89,15 @@ public class ClientLauncher {
 						String content = result.substring(4);
 						content = content.substring(1, content.length() - 1);
 						String[] splitted = content.split(", ");
+
 						byte[] bytes = new byte[splitted.length];
-						int i = 0;
-						for(; i < bytes.length; i++) {
+						for(int i = 0; i < bytes.length; i++) {
 							bytes[i] = (byte) ((int) Integer.valueOf(splitted[i]));
 						}
 						writer.write(new String(bytes));
 						System.out.println("230 transfert reussi");
 					} catch(Exception ex) {
-						System.out.println(ex.getMessage());
+						System.out.println("Ce fichier n'existe pas");
 					}
 					result = result.split(" ")[0];
 				} else {

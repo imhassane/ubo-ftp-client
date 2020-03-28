@@ -20,6 +20,7 @@ public class CommandeLS extends Commande {
 		StringBuilder builder = new StringBuilder();
 
 		try(Stream<Path> paths = Files.walk(Paths.get(commandeArgs[1]))) {
+			// On liste tous les fichiers qui ne sont pas cachés.
 			paths.filter(f -> !f.toFile().isHidden() && !f.toAbsolutePath().toString().contains(".")).forEach(f -> builder.append( f.toString() + " "));
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -22,6 +22,8 @@ public class Server extends ServerSocket {
 	
 	public void listenClients() throws IOException {
 		Socket socket = null;
+		// Chaque fois qu'on recoit un client, on créé un thread auquel on passe
+		// un flux de lecture et d'écriture qu'on attache à la socket qu'on a acceptée.
 		while(true) {
 			socket = this.accept();
 
